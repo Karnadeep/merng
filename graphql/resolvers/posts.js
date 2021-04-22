@@ -31,19 +31,20 @@ module.exports = {
             const user = checkAuth(context)
             if (body.trim() === '') {
                 throw new Error("Post body must not be empty");
-                const newPost = new Post({
-                    body,
-                    user: user._id,
-                    username: user.username,
-                    createdAt: new Date().toISOString()
-                });
-
-                const res = await newPost.save()
-                context.pubSub.publish('NEW_POST', {
-                    newPost: res
-                })
-                return res
             }
+            const newPost = new Post({
+                body,
+                user: user._id,
+                username: user.username,
+                createdAt: new Date().toISOString()
+            });
+
+            const res = await newPost.save()
+            context.pubSub.publish('NEW_POST', {
+                newPost: res
+            })
+            return res
+
         },
         async deletePost(_, { postID }, context) {
             const user = checkAuth(context)
@@ -62,12 +63,8 @@ module.exports = {
         likePost: async (_,
             { postId }, context) => {
             const { username } = checkAuth(context)
-            console.log('username :>> ', username);
             const post = await Post.findById(postId);
-            console.log('post :>> ', post);
             if (post) {
-                post.likes.map(like => console.log('like.username :>> ', typeof (like.username)))
-                console.log('length  :>> ', post.likes.find(like => like.username === username));
                 if (post.likes.find(like => like.username === username)) {
                     //Post already Liked,unlike it
                     post.likes = post.likes.filter(like => like.username !== username)

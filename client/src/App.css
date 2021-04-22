@@ -9,3 +9,6 @@
      width: 400px;
      margin:auto
  }
+ .ui.teal.button, .ui.teal.buttons .button{
+     background-color: #00b5ad;
+ }
